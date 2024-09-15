@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+
 import re
 import csv
 import argparse
@@ -41,7 +42,7 @@ def parse_arguments():
         "--output",
         help="Output results to a CSV file.",
         action="store",
-        default="output_" + datetime.datetime.now().strftime("%Y%m%d_%H%M") + ".csv"
+        default="abuseipdb_" + datetime.datetime.now().strftime("%Y%m%d_%H%M") + ".csv"
     )
 
     parser.add_argument(
