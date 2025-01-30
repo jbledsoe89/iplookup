@@ -11,11 +11,7 @@ import sys
 import os
 import time
 import datetime
-import logging
 from json.decoder import JSONDecodeError
-
-# Configure logging
-logging.basicConfig(level=logging.INFO, format='%(message)s')
 
 def parse_arguments():
     parser = argparse.ArgumentParser(
@@ -147,19 +143,19 @@ def check_file(api_key, filename, days, sleep_time, use_regex=False):
                 continue
 
         if not valid_ips:
-            logging.info("No valid IP addresses found to process.")
+            print("No valid IP addresses found to process.")
             return logs
 
         for idx, ip in enumerate(valid_ips, 1):
-            logging.info(f"Processing {idx}/{len(valid_ips)}: {ip}")
+            print(f"Processing {idx}/{len(valid_ips)}: {ip}")
             result = check_ip(api_key, ip, days)
             logs.append(result)
             # Adjust rate limit.
             time.sleep(sleep_time)
     except FileNotFoundError:
-        logging.error(f"File not found: {filename}")
+        print(f"File not found: {filename}")
     except Exception as e:
-        logging.error(f"An error occurred while processing the file: {e}")
+        print(f"An error occurred while processing the file: {e}")
     return logs
 
 def write_to_csv(logs, output_file):
@@ -170,9 +166,9 @@ def write_to_csv(logs, output_file):
             writer = csv.DictWriter(csvfile, fieldnames=sorted(keys))
             writer.writeheader()
             writer.writerows(logs)
-        logging.info(f"Results written to {output_file}")
+        print(f"Results written to {output_file}")
     else:
-        logging.info("No data to write to CSV.")
+        print("No data to write to CSV.")
 
 def main():
     args = parse_arguments()
@@ -180,14 +176,14 @@ def main():
     # API key management
     api_key = args.apikey or os.getenv('ABUSEIPDB_API_KEY')
     if not api_key:
-        logging.error("API key not provided. Use -a/--apikey or set the ABUSEIPDB_API_KEY environment variable.")
+        print("API key not provided. Use -a/--apikey or set the ABUSEIPDB_API_KEY environment variable.")
         sys.exit(1)
 
     # Overwrite prevention check
     if os.path.exists(args.output):
         response = input(f"Output file {args.output} already exists. Overwrite? (y/n): ")
         if response.lower() != 'y':
-            logging.info("Operation cancelled by user.")
+            print("Operation cancelled by user.")
             sys.exit(1)  # Exit the script if the user doesn't confirm overwrite
 
     if args.regex:
@@ -197,7 +193,7 @@ def main():
         logs = check_file(api_key, args.textfile, args.days, args.sleep, use_regex=False)
         write_to_csv(logs, args.output)
     else:
-        logging.error("Please specify a file using -r/--regex or -t/--textfile.")
+        print("Please specify a file using -r/--regex or -t/--textfile.")
         sys.exit(1)
 
 if __name__ == "__main__":
