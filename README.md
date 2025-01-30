@@ -16,15 +16,6 @@ A Python script to query IP addresses (IPv4 and IPv6) using the [AbuseIPDB API](
 - Python 3.x
 - An API key from [AbuseIPDB](https://www.abuseipdb.com/register).
 
-## Installation
-
-Clone the repository or download the script directly:
-
-```bash
-git clone https://github.com/yourusername/abuseipdb-ip-lookup.git
-cd abuseipdb-ip-lookup
-```
-
 ## Usage
 
 ```base
