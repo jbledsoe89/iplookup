@@ -68,13 +68,28 @@ def parse_arguments():
     return args
 
 def extract_ips(content):
-    ipv4_pattern = r'\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b'
-    ipv6_pattern = r'\b(?:[A-F0-9]{1,4}:){1,7}[A-F0-9]{1,4}\b'
-    pattern = f'({ipv4_pattern})|({ipv6_pattern})'
-    matches = re.findall(pattern, content, re.IGNORECASE)
+    """Extract IPv4 and IPv6 addresses from the given text."""
+
+    # Split the text into tokens that could represent IP addresses.  Using
+    # ``re.split`` here avoids having to craft an extremely complex regular
+    # expression for all valid IPv6 variations (including compressed forms
+    # such as ``2001:db8::1``).
+    tokens = re.split(r"[^0-9A-Fa-f:.]+", content)
+
     ips = set()
-    for match in matches:
-        ips.update(filter(None, match))
+    for token in tokens:
+        if not token:
+            continue
+        try:
+            # Validate the candidate token using ``ipaddress``.  This will
+            # correctly handle both IPv4 and IPv6 addresses, including those
+            # using the ``::`` zero-compression syntax.
+            ipaddress.ip_address(token)
+            ips.add(token)
+        except ValueError:
+            # Ignore tokens that are not valid IP addresses.
+            continue
+
     return ips
 
 def check_ip(api_key, ip, days):
