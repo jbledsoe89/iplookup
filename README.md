@@ -18,7 +18,7 @@ A Python script to query IP addresses (IPv4 and IPv6) using the [AbuseIPDB API](
 
 ## Usage
 
-```base
+```bash
 python3 iplookup.py -r /path/to/logfile.log -o results.csv -a YOUR_API_KEY
 ```
 
